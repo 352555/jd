@@ -144,10 +144,7 @@ function refreshToken() {
 
 function getReward(day) {
     return new Promise((resolve, _reject) => {
-        const t = '领取奖励'
-        let url = {
-            url: 'https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile',
-            headers: {
+        
                 "Content-Type": "application/json",
                 Authorization: aliYunPanToken,
                 "User-Agent": lk.userAgent
