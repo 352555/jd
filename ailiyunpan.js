@@ -141,6 +141,48 @@ function refreshToken() {
         })
     })
 }
+
+function getReward(day) {
+    return new Promise((resolve, _reject) => {
+        const t = '领取奖励'
+        let url = {
+            url: 'https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: aliYunPanToken,
+                "User-Agent": lk.userAgent
+            },
+            body: JSON.stringify({
+                "signInDay": day
+            })
+        }
+        lk.post(url, (error, _response, data) => {
+            try {
+                if (error) {
+                    lk.execFail()
+                    lk.appendNotifyInfo(`❌第${day}天${t}失败，请稍后再试`)
+                } else {
+                    lk.log(data)
+                    let dataObj = JSON.parse(data)
+                    if (dataObj.success) {
+                        lk.appendNotifyInfo(`✓${t}(第${day}天)，${dataObj?.result?.notice}`)
+                    } else {
+                        lk.execFail()
+                        lk.appendNotifyInfo(`❌第${day}天${t}失败，${dataObj.message}`)
+                    }
+                }
+            } catch (e) {
+                lk.logErr(e)
+                lk.log(`阿里云盘返回数据：${data}`)
+                lk.execFail()
+                lk.appendNotifyInfo(`❌第${day}天${t}错误，请带上日志联系作者，或稍后再试`)
+            } finally {
+                resolve()
+            }
+        })
+    })
+}
+
 function signIn() {
     return new Promise(async (resolve, _reject) => {
         let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
